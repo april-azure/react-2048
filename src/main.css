@@ -24,14 +24,35 @@ body{
 	margin: auto;
 }
 
-.grid-2048 {
+.grid_2048 {
+	margin: auto;
 	min-width: 400px;
+	max-width: 600px;
 	min-height: 400px;
 	border-radius: 8px;
+	padding-left: 1rem;
+	padding-bottom: 1rem;
+
 
 	display: grid;
 	grid-template-rows: 25% 25% 25% 25%;
-	grid-template-columns: 25% 25% 25% 25%; 
+	grid-template-columns: 25% 25% 25% 25%;
 
-	background-color: white;
+	background-color: #eee;
+}
+
+.grid_2048 div {
+	/*box*/
+	border-radius: 8px;
+	margin: 1rem 1rem 0 0;
+
+	/*style box*/
+	background-color: #ddd;
+
+	/*style font*/
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 4rem;
+	color: grey;
 }
