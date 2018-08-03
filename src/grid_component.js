@@ -18,7 +18,10 @@ class Grid extends Component {
 		}
 	    return (
 			<div className={style.container}>
-				<h2>2048</h2>
+				<div className={style.title}>
+					<h1>2048</h1>
+					<p>React</p>
+				</div>
 				<div className={style.grid_2048} id='grid-box'>
 					{ gridItems }
 				</div>

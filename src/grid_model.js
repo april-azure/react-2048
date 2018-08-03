@@ -5,6 +5,7 @@ const DIRECTIONS = {
 	DOWN: "down", 
 	LEFT: "left",
 	RIGHT: "right", 
+	ALL_DIRECTIONS: "all"
 }
 
 class GridModel {
