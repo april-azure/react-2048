@@ -5,6 +5,13 @@ const htmlWebpackPlugin = new HtmlWebPackPlugin({
   filename: "./index.html"
 });
 
+const productionConfig = 
+  {
+    output: {
+      publicPath: "/react-2048/",
+    }
+  }
+
 module.exports = {
   entry: './src/main.js',
   module: {

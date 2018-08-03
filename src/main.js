@@ -10,7 +10,7 @@ var main = (function(){
 	
 	(function ini() {
 		_gridModel.subscribe(render);
-		_gridModel.randomIni();
+		_gridModel.randomIni(2);
 		window.onkeydown = function(event) {
 			let key = event.key 
 			switch(key) {

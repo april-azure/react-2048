@@ -46,13 +46,42 @@ body{
 	border-radius: 8px;
 	margin: 1rem 1rem 0 0;
 
-	/*style box*/
-	background-color: #ddd;
 
 	/*style font*/
 	display: inline-block;
 	vertical-align: middle;
 	text-align: center;
 	font-size: 4rem;
+}
+
+.grid {
+	background-color: #ddd;
+}
+
+.grid_2 {
+	background-color: #dccab6;
+}
+
+.grid, .grid_2, .grid_4 {
 	color: grey;
+}
+
+.grid_4 {
+	background-color: #ddc9a5;
+}
+
+.grid_8 {
+	background-color: #e4a062;
+}
+
+.grid_16 {
+	background-color: #e58450;
+}
+
+.grid_32 {
+	background-color: #e36b4b;
+}
+
+.grid_8, .grid_16, .grid_32, .grid_64, .grid_128 {
+	color: white;
 }
