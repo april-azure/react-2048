@@ -33,10 +33,10 @@ body{
 	padding-left: 1rem;
 	padding-bottom: 1rem;
 
-
+	/*grid*/
 	display: grid;
-	grid-template-rows: 25% 25% 25% 25%;
-	grid-template-columns: 25% 25% 25% 25%;
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
 
 	background-color: #eee;
 }

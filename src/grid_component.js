@@ -7,9 +7,9 @@ class Grid extends Component {
 	constructor(props) {
 		super(props)
 	}
-
+	
 	render() {
-		var grids = this.props.grids
+		var grids = this.props.model.grids
 		var gridItems = [];
 		for(var row = 0, count=0; row < grids.length; row ++) {
 			for(var col = 0; col <grids[0].length; col ++) {
