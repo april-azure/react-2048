@@ -1,222 +1,149 @@
 import Utils from "./Utils"
+import Grid from "./grid"
 
 const DIRECTIONS = {
-	UP: "up",
-	DOWN: "down", 
-	LEFT: "left",
-	RIGHT: "right", 
-	ALL_DIRECTIONS: "all"
+	UP: {x:0 , y:1},
+	DOWN: {x:0, y:-1}, 
+	LEFT: {x:-1, y:0},
+	RIGHT: {x:1, y:0}
 }
 
+export {DIRECTIONS}
+
 class GridModel {
-	var 
-	constructor() {
-		this.grids = [[],[],[],[]]
-		for(var i =0; i < this.grids.length; i++) {
-			for(var j = 0; j < 4; j++) 
-				this.grids[i][j] = 0;
-		}
+	constructor(size) {
+		this.size = size;
+		this.grid = new Grid(size);
 		this.onChanges = [];
-		this.emptyCells = 16;
+		this.gridItems = [];
 	}
 
-	// requires to re-render the dom when the model is changed 
+	// inform subscribers to re-render the dom when the model is changed 
 	_inform() {
 		this.onChanges.forEach((cb) => cb());
 	}
 
 	_countEmptyCells() {
-		let count = 0;
-		for(var i = 0; i < this.grids.length; i++) {
-			for (var j = 0; j < this.grids[0].length; j++ ) {
-				if( !(typeof this.grids[i][j] == 'number' ) || this.grids[i][j] <= 0)
-					count++
-			}
-		}
-		this.emptyCells = count;
+
 	}
 
-	_isEmpty(x,y) {
-		return !((typeof this.grids[x][y]) == 'number') || this.grids[x][y] == 0 
+	// this is to build a 2d matrix for traversal 
+	// in this way could combin the 4 direction into 1 function
+	_buildTraversal(direction) {
+		let rows = [], cols = [];
+		for(var i = 0; i < this.size; i ++) {
+			rows[i] = i;
+			cols[i] = i;
+		} 
+		if(direction === DIRECTIONS.DOWN)
+			rows = rows.reverse();
+		if(direction === DIRECTIONS.RIGHT)
+			cols = cols.reverse();
+
+		// consider x as horizontal, y as vertical 
+		return {
+			rows: rows,
+			cols: cols
+		}
 	}
 
-	couldMove(direction) {
-		let grids = this.grids;
-		for(var row = 0; row < grids.length; row ++) {
-			for(var col = 0; col < grids[0].length; col ++) {
-				if(grids[row][col] > 0){
-					if(direction == DIRECTIONS.UP && row > 0){
-						if(grids[row-1][col] == 0 || grids[row-1][col] == grids[row][col])
-							return true;
-					}else if(direction == DIRECTIONS.DOWN && row < grids.length - 1) {
-						if(grids[row+1][col] == 0 || grids[row+1][col] == grids[row][col])
-							return true;
-					}else if(direction == DIRECTIONS.LEFT && col > 0) {
-						if(grids[row][col-1] == 0 || grids[row][col-1] == grids[row][col])
-							return true;
-					}else if(direction == DIRECTIONS.RIGHT && col < grids.length - 1) {
-						if(grids[row][col+1] == 0 || grids[row][col+1] == grids[row][col])
-							return true;
-					}
-				}
-			}
-		}
+	_incrementByDirection(row, col, direction) {
+		if(direction === DIRECTIONS.UP)
+			row -= 1;
+		if(direction === DIRECTIONS.DOWN)
+			row += 1;
+		if(direction === DIRECTIONS.LEFT)
+			col -= 1; 
+		if(direction === DIRECTIONS.RIGHT) 
+			col += 1;
+		return {row:row, col:col};
+	}
+
+	_isWithinGrid(row, col) {
+		if(row < this.size && col < this.size && row >= 0 && row >= 0) 
+			return true;
 		return false;
+	}
+
+	_findNextCell(row, col, direction) {
+		let cell = this.grid.getCellValue(row, col); 
+		let pos = this._incrementByDirection(row, col, direction);
+		let pre = {row: row, col: col};
+		while(this._isWithinGrid(pos.row, pos.col)) {
+			pre = {row: pos.row, col: pos.col}
+			cell = this.grid.getCellValue(pos.row, pos.col)
+			if(cell !== 0) {
+				console.log("The next cell is");
+				console.log(cell);
+				return cell;
+			}
+			pos = this._incrementByDirection(pos.row, pos.col, direction);
+		}
+		console.log("The next cell is");
+		console.log("row col " + pre.row + " " + pre.col);
+		return cell;
+	}
+
+	move(direction) {
+		let traversal = this._buildTraversal(direction);
+		//traverse the matrix 
+		traversal.rows.forEach((row) => {
+			traversal.cols.forEach((col) => {
+				if(this.grid.getCellValue(row, col) !== 0){
+					let nextCell = this._findNextCell(row, col, direction);
+				}
+			})
+		})
 	}	
 
-	moveUp() {
-		if(this.couldMove(DIRECTIONS.UP)){
-			for(var row = 1; row < this.grids.length; row ++) {
-				for(var col = 0; col <this.grids[0].length; col ++) {
-					if(!this._isEmpty(row,col)){ 						// check if current target is empty
-						let rowCurrent = row 
-						while(rowCurrent > 0) {
-							if(!this._isEmpty(rowCurrent-1, col)){
-								if(this.grids[rowCurrent-1][col] === this.grids[rowCurrent][col]){
-									this.grids[rowCurrent-1][col] *= 2;
-									this.grids[rowCurrent][col] = 0;
-								}
-								break; // stay here or combine with upper row
-							}else {
-								// if upperrow is empty, move 1 cell up
-								this.grids[rowCurrent-1][col] = this.grids[rowCurrent][col];
-								this.grids[rowCurrent][col] = 0;
-							}
-							rowCurrent--;
-						}
-					}
-				}
-			}
-			console.log(this.grids);
-			let iniCells = this.randomIni(1);
-			this._inform();
-			this._countEmptyCells();		
-			return iniCells;	
-		}
+	// move the tile from {x1, y1} to {x2, y2}
+	moveFromTo(x1, y1, x2, y2) {
 
 	}
-
-	moveDown() {
-		if(this.couldMove(DIRECTIONS.DOWN)){
-			for(var row = this.grids.length-2; row >= 0; row --) {
-				for(var col = 0; col <this.grids[0].length; col ++) {
-					if(!this._isEmpty(row,col)){ 						// check if current target is empty
-						let rowCurrent = row 
-						while(rowCurrent < this.grids.length-1) {
-							if(!this._isEmpty(rowCurrent+1, col)){
-								if(this.grids[rowCurrent+1][col] === this.grids[rowCurrent][col]){
-									this.grids[rowCurrent+1][col] *= 2;
-									this.grids[rowCurrent][col] = 0;
-								}
-								break; // stay here or combine with upper row
-							}else {
-								// if upperrow is empty, move 1 cell up
-								this.grids[rowCurrent+1][col] = this.grids[rowCurrent][col];
-								this.grids[rowCurrent][col] = 0;
-							}
-							rowCurrent++;
-						}
-					}
-				}
-			}
-			console.log(this.grids)
-			let iniCells = this.randomIni(1)
-			this._inform();
-			this._countEmptyCells();				
-			return iniCells;
-		}
-	}
-
-	moveLeft() {
-		if(this.couldMove(DIRECTIONS.LEFT)){
-			for(var col = 1; col < this.grids[0].length ; col ++) {
-				for(var row = 0; row <this.grids.length; row ++) {
-					if(!this._isEmpty(row, col)){ 						// check if current target is empty
-						let colCurrent = col 
-						while(colCurrent > 0) {
-							if(!this._isEmpty(row, colCurrent-1)){
-								if(this.grids[row][colCurrent-1] === this.grids[row][colCurrent]){
-									this.grids[row][colCurrent-1] *= 2;
-									this.grids[row][colCurrent] = 0;
-								}
-								break; // stay here or combine with upper row
-							}else {
-								// if upperrow is empty, move 1 cell up
-								this.grids[row][colCurrent-1] = this.grids[row][colCurrent];
-								this.grids[row][colCurrent] = 0;
-							}
-							colCurrent--;
-						}
-					}
-				}
-			}
-			console.log(this.grids);
-			let iniCells = this.randomIni(1);
-			this._inform();
-			this._countEmptyCells();	
-			return iniCells;			
-		}
-	}
-
-	moveRight() { //todo
-		if(this.couldMove(DIRECTIONS.RIGHT)){
-			for(var col = this.grids[0].length-2; col >= 0 ; col --) {
-				for(var row = 0; row <this.grids.length; row ++) {
-					if(!this._isEmpty(row, col)){ 						// check if current target is empty
-						let colCurrent = col 
-						while(colCurrent < this.grids[0].length-1) {
-							if(!this._isEmpty(row, colCurrent+1)){
-								if(this.grids[row][colCurrent+1] === this.grids[row][colCurrent]){
-									this.grids[row][colCurrent+1] *= 2;
-									this.grids[row][colCurrent] = 0;
-								}
-								break; // stay here or combine with upper row
-							}else {
-								// if upperrow is empty, move 1 cell up
-								this.grids[row][colCurrent+1] = this.grids[row][colCurrent];
-								this.grids[row][colCurrent] = 0;
-							}
-							colCurrent++;
-						}
-					}
-				}
-			}
-			console.log(this.grids);
-			let iniCell = this.randomIni(1);
-			this._inform();
-			this._countEmptyCells();	
-			return iniCell;			
-		}
-	}
-
 
 	subscribe(fn) {
 		this.onChanges.push(fn);
 	}
 
-	randomIni(val=1) {
-		let iniCell = []
-		if(this.emptyCells > 0){
-			let randomCount = val; // fix randomcount to 1 
-			let generatedCount = 0;
-			let randomX = Utils.genRanInt(0,3);
-			let randomY = Utils.genRanInt(0,3);
-			while(generatedCount < randomCount) { 
-				if(this.grids[randomX][randomY] <= 0) {
-					let val = Utils.genDisRanIntWithin([2,4])
-					this.grids[randomX][randomY] = val;
-					generatedCount++;
-					iniCell.push(randomX * 4 + randomY);
-				}
-				randomX = Utils.genRanInt(0,3);
-				randomY = Utils.genRanInt(0,3);		
-			}
-			this._countEmptyCells();
-			this._inform();			
-		}else 
-			console.log('the game should be ended');
-		return iniCell;
+	randomIni(val = 1) {
+		let pos = this.grid.randomAvailPos();
+		if(pos) {
+			this.insertGridItem(pos);
+		}
+
 	}
+
+	// @para {x, y} pos
+	insertGridItem(pos) {
+		console.log(pos);
+		let randomValue = Math.random() < 0.9? 2: 4;
+		let gridItem = new GridItem(pos.x, pos.y, randomValue);
+		this.gridItems.push(gridItem);
+		this.grid.fillCell(pos.x, pos.y, gridItem);
+		this._inform();
+	}
+
 }
+
+class GridItem {
+	constructor(x, y, val = 0){
+		this.x = x;
+		this.y = y;
+		this.val = val; 
+
+		// needs to animation remov class? 
+		this.previousX = null;
+		this.previousY = null; 
+	}
+
+	getPos() {
+		return {x:this.x, y:this.y};
+	}
+
+	// return the className for current position
+	getClassName() {
+
+	}
+} 
 
 export default GridModel
