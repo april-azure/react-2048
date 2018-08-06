@@ -13,6 +13,7 @@ var main = (function(){
 		gridModel.subscribe(render);
 		render();
 		gridModel.randomIni();
+		gridModel.randomIni();
 		window.onkeydown = function(event) {
 			let key = event.key; 
 			let iniCells;

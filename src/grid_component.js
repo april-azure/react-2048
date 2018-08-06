@@ -14,18 +14,16 @@ class GridComponent extends Component {
 		var items = this.props.model.gridItems;
 
 		// to render the grid containers
+		// to render the real grid items (tiles)
+		var gridItems = [];
 		for(var row = 0, count=0; row < grids.length; row ++) {
 			for(var col = 0; col <grids[0].length; col ++) {
 				gridContainers.push(<div className = {style.grid} key = {count}></div>)
+				gridItems.push(<GridItemComponent key={count} item={grids[row][col]}/>)
 				count++;
 			}
 		}
 
-		// to render the real grid items (tiles)
-		var gridItems = [];
-		for(let i = 0; i < items.length; i ++) {
-			gridItems.push(<GridItemComponent key={i} item={items[i]}/>)
-		}
 
 	    return (
 			<div className={style.container}>

@@ -22,18 +22,23 @@ class Grid {
 		}
 	}
 
+	isFull() {
+		if(this.emptyCells > 0) return false;
+		return true;
+	}
+
 	getCellValue(x,y) {
 		return this.gridContainers[x][y];
 	}
 
 	clearCell(x, y) {
 		this.gridContainers[x][y] = 0;
-		this.emptyCells += 1;
+		this._countEmptyCells();
 	}
 
 	fillCell(x, y, val = 1) {
 		this.gridContainers[x][y] = val;
-		this.emptyCells -= 1;
+		this._countEmptyCells();
 	}
 
 	emptyGrid(size) {
@@ -56,7 +61,7 @@ class Grid {
 				if(cell === 0) count++;
 			})
 		})
-		return count;
+		return this.emptyCells = count;
 	}
 
 }
