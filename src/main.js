@@ -20,34 +20,42 @@ var main = (function(){
 			switch(key) {
 				case ("ArrowUp"): 
 					console.log('up');
-					iniCells = gridModel.move(DIRECTIONS.UP);					
+					iniCells = gridModel.move(DIRECTIONS.UP);		
+					cellAppear(iniCells);								
 					break;
 
 				case ("ArrowDown"): 
 					console.log('down');
 					iniCells = gridModel.move(DIRECTIONS.DOWN);
-					// cellAppear(iniCells);						
+					cellAppear(iniCells);						
 					break;
 
 				case ("ArrowLeft"): 
 					console.log('left');		
 					iniCells = gridModel.move(DIRECTIONS.LEFT);		
-					// cellAppear(iniCells);										
+					cellAppear(iniCells);										
 					break;
 
 				case ("ArrowRight"): 
 					console.log('right');
 					iniCells = gridModel.move(DIRECTIONS.RIGHT);
-					// cellAppear(iniCells);								
+					cellAppear(iniCells);								
 					break;
 
-				default: return;
+				
 			}
 		};		
 	})();
 
-	function cellAppear(iniCells) {
-
+	function cellAppear(pos) {
+		if(pos){
+			console.log("cell appear " + pos.x + " " + pos.y)
+			let className = style[`grid_item_${pos.x}_${pos.y}`];
+			let $element = document.getElementsByClassName(className)[0];
+			if($element.classList.contains(style.appear))	
+				$element.classList.remove(style.appear);
+			setTimeout(() => $element.classList.add(style.appear), 0);		
+		}
 	}
 
 	function render() {

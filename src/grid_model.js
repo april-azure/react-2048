@@ -84,30 +84,72 @@ class GridModel {
 		return {row: pre.row, col: pre.col, val: 0, pre: null};
 	}
 
-	move(direction) {
-		let traversal = this._buildTraversal(direction);
-		//traverse the matrix 
-		traversal.rows.forEach((row) => {
-			traversal.cols.forEach((col) => {
-				if(this.grid.getCellValue(row, col) !== 0){
-					let nextCell = this._findNextCell(row, col, direction);
-					if(nextCell.val === 0) 
-						this.moveFromTo(row, col, nextCell.row, nextCell.col)
-					else if(nextCell.val !== this.grid.getCellValue(row, col).val)
-						this.moveFromTo(row, col, nextCell.pre.row, nextCell.pre.col);
-					else 
-						this.merge(row, col, nextCell.x, nextCell.y);
+	couldMove(direction) {
+		let grids = this.grid.gridContainers;
+		for(let row = 0; row < this.size; row ++){
+			for(let col = 0; col < this.size; col ++){
+				let current = grids[row][col].val;
+				if(current > 0) {
+					switch(direction) {
+						case(DIRECTIONS.UP): 
+							if(row > 0) {
+								if(grids[row-1][col].val === current || grids[row-1][col] === 0)
+									return true;
+							} 
+							break;
+						case(DIRECTIONS.DOWN): 
+							if(row < this.size-1) {
+								if(grids[row+1][col].val === current || grids[row+1][col] === 0)
+									return true;
+							} 	
+							break;				
+						case(DIRECTIONS.LEFT):
+							if(col > 0) {
+								if(grids[row][col-1].val === current || grids[row][col-1] === 0)
+									return true;
+							} 	
+							break;							
+						case(DIRECTIONS.RIGHT):
+							if(col < this.size-1) {
+								if(grids[row][col+1].val === current || grids[row][col+1] === 0)
+									return true;
+							} 	
+							break;												
+					}					
 				}
-			})
-		})
+			}
+		}
+		return false;
+	}
 
-		// re-render
-		this._inform();
-		if(!this.grid.isFull()){
-			this.randomIni();
+	move(direction) {
+		if(this.couldMove(direction)){
+			let traversal = this._buildTraversal(direction);
+			//traverse the matrix 
+			traversal.rows.forEach((row) => {
+				traversal.cols.forEach((col) => {
+					if(this.grid.getCellValue(row, col) !== 0){
+						let nextCell = this._findNextCell(row, col, direction);
+						if(nextCell.val === 0) 
+							this.moveFromTo(row, col, nextCell.row, nextCell.col)
+						else if(nextCell.val !== this.grid.getCellValue(row, col).val)
+							this.moveFromTo(row, col, nextCell.pre.row, nextCell.pre.col);
+						else 
+							this.merge(row, col, nextCell.x, nextCell.y);
+					}
+				});
+			});
+
+			// re-render
 			this._inform();
-		}else {
-			console.log('the game should be ended')
+			if(!this.grid.isFull()){
+				let pos = this.randomIni();
+				this._inform();
+				console.log('the returned ini pos ' + pos.x + " " + pos.y );
+				return pos;
+			}else {
+				console.log('the game should be ended')
+			}			
 		}
 	}	
 
@@ -122,7 +164,6 @@ class GridModel {
 	// x2, y2 is empty
 	moveFromTo(x1, y1, x2, y2) {
 		let currentCell = this.grid.getCellValue(x1, y1);
-		console.log(currentCell);
 		this.grid.clearCell(x1, y1);
 		currentCell.updatePos(x2, y2);
 		this.grid.fillCell(x2, y2, currentCell);
@@ -137,7 +178,7 @@ class GridModel {
 		if(pos) {
 			this.insertGridItem(pos);
 		}
-
+		return pos; 
 	}
 
 	// @para {x, y} pos
