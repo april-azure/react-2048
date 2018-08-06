@@ -87,10 +87,11 @@ class GridModel {
 					}
 				}
 			}
-			console.log(this.grids)
-			this.randomIni(1)
+			console.log(this.grids);
+			let iniCells = this.randomIni(1);
 			this._inform();
-			this._countEmptyCells();			
+			this._countEmptyCells();		
+			return iniCells;	
 		}
 
 	}
@@ -119,9 +120,10 @@ class GridModel {
 				}
 			}
 			console.log(this.grids)
-			this.randomIni(1)
+			let iniCells = this.randomIni(1)
 			this._inform();
 			this._countEmptyCells();				
+			return iniCells;
 		}
 	}
 
@@ -148,10 +150,11 @@ class GridModel {
 					}
 				}
 			}
-			console.log(this.grids)
-			this.randomIni(1)
+			console.log(this.grids);
+			let iniCells = this.randomIni(1);
 			this._inform();
-			this._countEmptyCells();				
+			this._countEmptyCells();	
+			return iniCells;			
 		}
 	}
 
@@ -178,10 +181,11 @@ class GridModel {
 					}
 				}
 			}
-			console.log(this.grids)
-			this.randomIni(1)
+			console.log(this.grids);
+			let iniCell = this.randomIni(1);
 			this._inform();
-			this._countEmptyCells();				
+			this._countEmptyCells();	
+			return iniCell;			
 		}
 	}
 
@@ -191,6 +195,7 @@ class GridModel {
 	}
 
 	randomIni(val=1) {
+		let iniCell = []
 		if(this.emptyCells > 0){
 			let randomCount = val; // fix randomcount to 1 
 			let generatedCount = 0;
@@ -201,6 +206,7 @@ class GridModel {
 					let val = Utils.genDisRanIntWithin([2,4])
 					this.grids[randomX][randomY] = val;
 					generatedCount++;
+					iniCell.push(randomX * 4 + randomY);
 				}
 				randomX = Utils.genRanInt(0,3);
 				randomY = Utils.genRanInt(0,3);		
@@ -209,6 +215,7 @@ class GridModel {
 			this._inform();			
 		}else 
 			console.log('the game should be ended');
+		return iniCell;
 	}
 }
 
