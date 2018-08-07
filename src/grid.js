@@ -54,6 +54,16 @@ class Grid {
 		return grid;
 	}
 
+	setNewGridsToOld() {
+		let grids = this.gridContainers;
+		grids.forEach((row) => {
+			row.forEach((item) => {
+				if(item)
+					item.updateNew(false);
+			})
+		});
+	}
+
 	_countEmptyCells() {
 		let count = 0;
 		this.gridContainers.forEach((row) => {

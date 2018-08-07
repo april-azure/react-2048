@@ -98,7 +98,7 @@ body{
 }
 
 .appear {
-	animation-duration: 2s;
+	animation-duration: 0.4s;
 	animation-delay: 100ms;
 	animation-name: appear;
 	animation-timing-function: ease;
@@ -109,13 +109,7 @@ body{
 		opacity: 0;
 		transform: scale(0);
 	}
-
-	85% {
-		opacity: 1;
-		transform: scale(1.2);
-	}
-
-
+	
 	100% {
 		opacity: 1;
 		transform: scale(1);
@@ -136,6 +130,14 @@ body{
 
 	/*stle*/
 	border-radius: 8px;
+
+
+}
+
+.grid_item.animation {
+	transition-duration: 0.4s;
+	transition-timing-function: ease-in;
+	transition-property: top left;	
 }
 
 .grid_item > div {
@@ -144,84 +146,89 @@ body{
 	vertical-align: middle;
 }
 
+.grid_item.appear{
+	/*if not set, the appear item will appear first, then play the animation.*/
+	opacity: 0;
+}
+
 /*css the position of the items */
-.grid_item_0_0 {
+.grid_item.grid_item_0_0 {
 	top: var(--grid-gap);
 	left: var(--grid-gap);
 }
 
-.grid_item_0_1 {
+.grid_item.grid_item_0_1 {
 	top: var(--grid-gap);
 	left: calc(2*var(--grid-gap) + 110px);
 }
 
-.grid_item_0_2 {
+.grid_item.grid_item_0_2 {
 	top: var(--grid-gap);
 	left: calc(3*var(--grid-gap) + 220px);
 }
 
-.grid_item_0_3 {
+.grid_item.grid_item_0_3 {
 	top: var(--grid-gap);
 	left: calc(4*var(--grid-gap) + 330px);
 }
 
-.grid_item_1_0 {
+.grid_item.grid_item_1_0 {
 	top: calc(2*var(--grid-gap) + 110px);
 	left: var(--grid-gap);
 }
 
-.grid_item_1_1 {
+.grid_item.grid_item_1_1 {
 	top: calc(2*var(--grid-gap) + 110px);
 	left: calc(2*var(--grid-gap) + 110px);
 }
 
-.grid_item_1_2 {
+.grid_item.grid_item_1_2 {
 	top: calc(2*var(--grid-gap) + 110px);
 	left: calc(3*var(--grid-gap) + 220px);
 }
 
-.grid_item_1_3 {
+.grid_item.grid_item_1_3 {
 	top: calc(2*var(--grid-gap) + 110px);
 	left: calc(4*var(--grid-gap) + 330px);
 }
 
-.grid_item_2_0 {
+.grid_item.grid_item_2_0 {
 	top: calc(3*var(--grid-gap) + 220px);
 	left: var(--grid-gap);
 }
 
-.grid_item_2_1 {
+.grid_item.grid_item_2_1 {
 	top: calc(3*var(--grid-gap) + 220px);
 	left: calc(2*var(--grid-gap) + 110px);
 }
 
-.grid_item_2_2 {
+.grid_item.grid_item_2_2 {
 	top: calc(3*var(--grid-gap) + 220px);
 	left: calc(3*var(--grid-gap) + 220px);
 }
 
-.grid_item_2_3 {
+.grid_item.grid_item_2_3 {
 	top: calc(3*var(--grid-gap) + 220px);
 	left: calc(4*var(--grid-gap) + 330px);
 }
 
-.grid_item_3_0 {
+.grid_item.grid_item_3_0 {
 	top: calc(4*var(--grid-gap) + 330px);
 	left: var(--grid-gap);
 }
 
-.grid_item_3_1 {
+.grid_item.grid_item_3_1 {
 	top: calc(4*var(--grid-gap) + 330px);
 	left: calc(2*var(--grid-gap) + 110px);
 }
 
-.grid_item_3_2 {
+.grid_item.grid_item_3_2 {
 
 	top: calc(4*var(--grid-gap) + 330px);
 	left: calc(3*var(--grid-gap) + 220px);
 }
 
-.grid_item_3_3 {
+.grid_item.grid_item_3_3 {
 	top: calc(4*var(--grid-gap) + 330px);
 	left: calc(4*var(--grid-gap) + 330px);
 }

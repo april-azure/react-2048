@@ -73,7 +73,7 @@ class GridModel {
 			if(cell !== 0) {
 				console.log("The next cell is");
 				console.log(cell);
-				cell.pre = {row: pre.row, col: pre.col};
+				cell.setPrePos(pre.row, pre.col);
 				return cell;
 			}
 			pre = {row: pos.row, col: pos.col}
@@ -124,6 +124,7 @@ class GridModel {
 
 	move(direction) {
 		if(this.couldMove(direction)){
+			this._clearPrePoses();
 			let traversal = this._buildTraversal(direction);
 			//traverse the matrix 
 			traversal.rows.forEach((row) => {
@@ -133,7 +134,7 @@ class GridModel {
 						if(nextCell.val === 0) 
 							this.moveFromTo(row, col, nextCell.row, nextCell.col)
 						else if(nextCell.val !== this.grid.getCellValue(row, col).val)
-							this.moveFromTo(row, col, nextCell.pre.row, nextCell.pre.col);
+							this.moveFromTo(row, col, nextCell.preX, nextCell.preY);
 						else 
 							this.merge(row, col, nextCell.x, nextCell.y);
 					}
@@ -142,6 +143,7 @@ class GridModel {
 
 			// re-render
 			this._inform();
+			this.grid.setNewGridsToOld();
 			if(!this.grid.isFull()){
 				let pos = this.randomIni();
 				this._inform();
@@ -152,6 +154,17 @@ class GridModel {
 			}			
 		}
 	}	
+
+	_clearPrePoses() {
+		let grids = this.grid.gridContainers;
+		grids.forEach((row) => {
+			row.forEach((item) => {
+				if(typeof item === "object") {
+					item.clearPrePos();
+				}
+			})
+		})
+	}
 
 	merge(x1, y1, x2, y2) {
 		console.log('try to merge ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
@@ -165,7 +178,7 @@ class GridModel {
 	moveFromTo(x1, y1, x2, y2) {
 		let currentCell = this.grid.getCellValue(x1, y1);
 		this.grid.clearCell(x1, y1);
-		currentCell.updatePos(x2, y2);
+		currentCell.updatePos(x1, y1, x2, y2);
 		this.grid.fillCell(x2, y2, currentCell);
 	}
 
@@ -173,7 +186,7 @@ class GridModel {
 		this.onChanges.push(fn);
 	}
 
-	randomIni(val = 1) {
+	randomIni(val = 1) {	
 		let pos = this.grid.randomAvailPos();
 		if(pos) {
 			this.insertGridItem(pos);
@@ -197,14 +210,29 @@ class GridItem {
 		this.x = x;
 		this.y = y;
 		this.val = val; 
+		this.new = true;
 
 		// needs to animation remov class? 
-		this.previousX = null;
-		this.previousY = null; 
+		this.preX = null;
+		this.preY = null; 
+	}
+
+	updateNew(val = false) {
+		this.new = val;
 	}
 
 	getPos() {
 		return {x:this.x, y:this.y};
+	}
+
+	setPrePos(x, y) {
+		this.preX = x;
+		this.preY = y;
+	}
+
+	clearPrePos() {
+		this.preX = null;
+		this.preY = null;
 	}
 
 	updateValue(val, x, y) {
@@ -213,9 +241,12 @@ class GridItem {
 			this.updatePos(x, y);
 	}
 
-	updatePos(x, y) {
-		this.x = x;
-		this.y = y;
+	updatePos(x1, y1, x2, y2) {
+		this.x = x2;
+		this.y = y2;
+		if(x1 && y1) {
+			this.setPrePos(x1, x2);		
+		}
 	}
 
 	// return the className for current position

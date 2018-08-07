@@ -20,26 +20,22 @@ var main = (function(){
 			switch(key) {
 				case ("ArrowUp"): 
 					console.log('up');
-					iniCells = gridModel.move(DIRECTIONS.UP);		
-					cellAppear(iniCells);								
+					iniCells = gridModel.move(DIRECTIONS.UP);										
 					break;
 
 				case ("ArrowDown"): 
 					console.log('down');
-					iniCells = gridModel.move(DIRECTIONS.DOWN);
-					cellAppear(iniCells);						
+					iniCells = gridModel.move(DIRECTIONS.DOWN);						
 					break;
 
 				case ("ArrowLeft"): 
 					console.log('left');		
-					iniCells = gridModel.move(DIRECTIONS.LEFT);		
-					cellAppear(iniCells);										
+					iniCells = gridModel.move(DIRECTIONS.LEFT);											
 					break;
 
 				case ("ArrowRight"): 
 					console.log('right');
-					iniCells = gridModel.move(DIRECTIONS.RIGHT);
-					cellAppear(iniCells);								
+					iniCells = gridModel.move(DIRECTIONS.RIGHT);							
 					break;
 
 				
