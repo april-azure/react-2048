@@ -98,7 +98,7 @@ body{
 }
 
 .appear {
-	animation-duration: 0.4s;
+	animation-duration: 0.2s;
 	animation-delay: 100ms;
 	animation-name: appear;
 	animation-timing-function: ease;
@@ -114,6 +114,10 @@ body{
 		opacity: 1;
 		transform: scale(1);
 	}
+}
+
+.grid_item.merged {
+	z-index: 10;
 }
 
 .grid_item {
@@ -135,8 +139,8 @@ body{
 }
 
 .grid_item.animation {
-	transition-duration: 0.4s;
-	transition-timing-function: ease-in;
+	transition-duration: 0.1s;
+	transition-timing-function: ease-in-out;
 	transition-property: top left;	
 }
 

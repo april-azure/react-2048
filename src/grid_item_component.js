@@ -24,8 +24,11 @@ class GridItemComponent extends Component {
 		let preClassName = item.preX && item.preY ? style[`grid_item_${item.preX}_${item.preY}`] : "";
 		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";		
 		if(this.$div.current.classList.contains(preClassName)){
- 			this.$div.current.classList.add(posClassName);
-			 this.$div.current.classList.remove(preClassName);
+			setTimeout(() => {
+				this.$div.current.classList.remove(preClassName);			
+				this.$div.current.classList.add(posClassName);
+			}, 0)
+
 			
 		}
 	}
@@ -36,6 +39,7 @@ class GridItemComponent extends Component {
 		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";
 		let valClassName = item.val > 0 ? style[`grid_${item.val}`] : "";
 		let newClassName = item.new ? style.appear : "";
+		let mergedClassName = item.merged? style.merged : "";
 
 		if(!item.preX || !item.preY) {
 			return (
@@ -45,6 +49,14 @@ class GridItemComponent extends Component {
 					</div>
 				</div>
 			)			
+		}else if(item.merged) {
+			return (
+				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = { style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
+					<div>
+						{item.val && item.val > 0? item.val: "" }
+					</div>
+				</div>				
+			)
 		}else {
 			return (
 				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = { style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
@@ -52,7 +64,7 @@ class GridItemComponent extends Component {
 						{item.val && item.val > 0? item.val: "" }
 					</div>
 				</div>
-			)			
+			)					
 		}
 
 	}

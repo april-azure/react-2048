@@ -170,7 +170,9 @@ class GridModel {
 		console.log('try to merge ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
 
 		let targetCell = this.grid.getCellValue(x2, y2).updateValue(this.grid.getCellValue(x2, y2).val * 2);
+		this.grid.getCellValue(x2, y2).setMergedFrom(x1, y1);
 		this.grid.clearCell(x1, y1);
+		// todo should trigger the animation to destroy the cell.
 	}
 
 	// move the tile from {x1, y1} to {x2, y2}
@@ -211,7 +213,9 @@ class GridItem {
 		this.y = y;
 		this.val = val; 
 		this.new = true;
-
+		this.merged = false; 
+		this.mergedX = null;
+		this.mergedY = null;
 		// needs to animation remov class? 
 		this.preX = null;
 		this.preY = null; 
@@ -223,6 +227,18 @@ class GridItem {
 
 	getPos() {
 		return {x:this.x, y:this.y};
+	}
+
+	setMergedFrom(x, y) {
+		this.merged = true;
+		this.mergedX = x;
+		this.mergedY = y;
+	}
+
+	clearMerge() {
+		this.merged = false;
+		this.mergedX = null;
+		this.mergedY = null;
 	}
 
 	setPrePos(x, y) {
