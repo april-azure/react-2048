@@ -35,7 +35,7 @@ class GridItemComponent extends Component {
 
 	render() {
 		let item = this.props.item;
-		let preClassName = item.preX && item.preY ? style[`grid_item_${item.preX}_${item.preY}`] : "";
+		let preClassName = typeof item.preX == "number" && typeof item.preY == "number" ? style[`grid_item_${item.preX}_${item.preY}`] : "";
 		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";
 		let valClassName = item.val > 0 ? style[`grid_${item.val}`] : "";
 		let newClassName = item.new ? style.appear : "";
@@ -51,7 +51,7 @@ class GridItemComponent extends Component {
 			)			
 		}else if(item.merged) {
 			return (
-				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = { style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
+				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = {mergedClassName + " "+ style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
 					<div>
 						{item.val && item.val > 0? item.val: "" }
 					</div>

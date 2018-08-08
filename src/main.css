@@ -98,7 +98,7 @@ body{
 }
 
 .appear {
-	animation-duration: 0.2s;
+	animation-duration: 2s;
 	animation-delay: 100ms;
 	animation-name: appear;
 	animation-timing-function: ease;
@@ -139,8 +139,8 @@ body{
 }
 
 .grid_item.animation {
-	transition-duration: 0.1s;
-	transition-timing-function: ease-in-out;
+	transition-duration: 2s;
+	transition-timing-function: ease-out;
 	transition-property: top left;	
 }
 

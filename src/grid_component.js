@@ -2,6 +2,7 @@ import style from "./main.css"
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
 import GridItemComponent from "./grid_item_component"
+import Utils from "./Utils"
 
 class GridComponent extends Component {
 	constructor(props) {
@@ -19,11 +20,14 @@ class GridComponent extends Component {
 		for(var row = 0, count=0; row < grids.length; row ++) {
 			for(var col = 0; col <grids[0].length; col ++) {
 				gridContainers.push(<div className = {style.grid} key = {count}></div>)
-				gridItems.push(<GridItemComponent key={count} item={grids[row][col]}/>)
 				count++;
 			}
 		}
 
+		// index might have problem
+		items.forEach((item, index) => {
+			gridItems.push(<GridItemComponent item={item} key = {item.key}/>)
+		})
 
 	    return (
 			<div className={style.container}>

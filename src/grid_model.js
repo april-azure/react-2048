@@ -14,6 +14,7 @@ class GridModel {
 	constructor(size) {
 		this.size = size;
 		this.grid = new Grid(size);
+		this.gridItems = [];
 		this.onChanges = [];
 	}
 
@@ -65,23 +66,24 @@ class GridModel {
 	}
 
 	_findNextCell(row, col, direction) {
+	// return the next cell which is not empty or at the boundary
 		let cell = this.grid.getCellValue(row, col); 
 		let pos = this._incrementByDirection(row, col, direction);
 		let pre = {row: row, col: col};
 		while(this._isWithinGrid(pos.row, pos.col)) {
-			cell = this.grid.getCellValue(pos.row, pos.col)
+			cell = this.grid.getCellValue(pos.row, pos.col);
 			if(cell !== 0) {
 				console.log("The next cell is");
 				console.log(cell);
-				cell.setPrePos(pre.row, pre.col);
-				return cell;
+
+				return {val: cell.val, row: pos.row, col: pos.col, preX: pre.row, preY: pre.col};
 			}
 			pre = {row: pos.row, col: pos.col}
 			pos = this._incrementByDirection(pos.row, pos.col, direction);
 		}
 		console.log("The next cell is");
 		console.log("row col " + pre.row + " " + pre.col);
-		return {row: pre.row, col: pre.col, val: 0, pre: null};
+		return {row: pre.row, col: pre.col, val: 0, preX: null, preY: null};
 	}
 
 	couldMove(direction) {
@@ -124,7 +126,7 @@ class GridModel {
 
 	move(direction) {
 		if(this.couldMove(direction)){
-			this._clearPrePoses();
+			this._clearGridItems();
 			let traversal = this._buildTraversal(direction);
 			//traverse the matrix 
 			traversal.rows.forEach((row) => {
@@ -136,14 +138,13 @@ class GridModel {
 						else if(nextCell.val !== this.grid.getCellValue(row, col).val)
 							this.moveFromTo(row, col, nextCell.preX, nextCell.preY);
 						else 
-							this.merge(row, col, nextCell.x, nextCell.y);
+							this.merge(row, col, nextCell.row, nextCell.col);
 					}
 				});
 			});
 
 			// re-render
 			this._inform();
-			this.grid.setNewGridsToOld();
 			if(!this.grid.isFull()){
 				let pos = this.randomIni();
 				this._inform();
@@ -155,22 +156,51 @@ class GridModel {
 		}
 	}	
 
+	_clearGridItems() {
+		this._clearPrePoses();
+		this._clearDestroyableItems();
+		this._clearMergedItems();
+		this.grid.setNewGridsToOld();
+	}
+
 	_clearPrePoses() {
 		let grids = this.grid.gridContainers;
 		grids.forEach((row) => {
 			row.forEach((item) => {
-				if(typeof item === "object") {
+				if(typeof item == "object") {
 					item.clearPrePos();
 				}
 			})
 		})
 	}
 
+	_clearDestroyableItems() {
+		this.gridItems = this.gridItems.filter((item) => {return !item.isDestroyable()});
+	}
+
+	_clearMergedItems() {
+		this.gridItems.forEach((item) => {
+			if(item.merged)
+				item.setMerged(false);
+		})
+	}
+
+	// merge the item from {x1,y1} to {x2, y2}
 	merge(x1, y1, x2, y2) {
 		console.log('try to merge ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
+		// remove the cell from the grids
+		let merge1 = this.grid.getCellValue(x1, y1);
+		let merge2 = this.grid.getCellValue(x2, y2);
+		merge1.updatePos(x1, y1, x2, y2);
+		merge1.setDestroy(true);
+		merge2.setDestroy(true);
+		// initialize the merged 
 
-		let targetCell = this.grid.getCellValue(x2, y2).updateValue(this.grid.getCellValue(x2, y2).val * 2);
-		this.grid.getCellValue(x2, y2).setMergedFrom(x1, y1);
+		let targetCell = new GridItem(x2, y2, merge1.getValue()*2, false, true);
+		// put into the render list
+		this.gridItems.push(targetCell);
+
+		this.grid.fillCell(x2, y2, targetCell);
 		this.grid.clearCell(x1, y1);
 		// todo should trigger the animation to destroy the cell.
 	}
@@ -198,9 +228,9 @@ class GridModel {
 
 	// @para {x, y} pos
 	insertGridItem(pos) {
-		console.log(pos);
 		let randomValue = Math.random() < 0.9? 2: 4;
 		let gridItem = new GridItem(pos.x, pos.y, randomValue);
+		this.gridItems.push(gridItem);
 		this.grid.fillCell(pos.x, pos.y, gridItem);
 		this._inform();
 	}
@@ -208,17 +238,25 @@ class GridModel {
 }
 
 class GridItem {
-	constructor(x, y, val = 0){
+	constructor(x, y, val = 0, newItem = true, merged = false, destroy = false, preX = null, preY = null){
 		this.x = x;
 		this.y = y;
 		this.val = val; 
-		this.new = true;
-		this.merged = false; 
-		this.mergedX = null;
-		this.mergedY = null;
+		this.new = newItem;
+		this.merged = merged; 
+		this.destroy = destroy;
 		// needs to animation remov class? 
-		this.preX = null;
-		this.preY = null; 
+		this.preX = preX;
+		this.preY = preY; 
+		this.key = Utils.generateId();
+	}
+
+	isDestroyable() {
+		return this.destroy;
+	}
+
+	setDestroy(val = true) {
+		this.destroy = val;
 	}
 
 	updateNew(val = false) {
@@ -227,6 +265,10 @@ class GridItem {
 
 	getPos() {
 		return {x:this.x, y:this.y};
+	}
+
+	setMerged(val = false) {
+		this.merged = val;
 	}
 
 	setMergedFrom(x, y) {
@@ -251,17 +293,21 @@ class GridItem {
 		this.preY = null;
 	}
 
+	getValue() {
+		return this.val;
+	}
+
 	updateValue(val, x, y) {
 		this.val = val;
-		if(x && y) 
-			this.updatePos(x, y);
+		this.x = x;
+		this.y = y;
 	}
 
 	updatePos(x1, y1, x2, y2) {
 		this.x = x2;
 		this.y = y2;
-		if(x1 && y1) {
-			this.setPrePos(x1, x2);		
+		if((typeof x1 === "number") && (typeof y1 === "number")) {
+			this.setPrePos(x1, y1);		
 		}
 	}
 
