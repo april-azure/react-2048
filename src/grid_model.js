@@ -263,6 +263,12 @@ class GridItem {
 		this.new = val;
 	}
 
+	hasPrePos() {
+		if((this.preX!=null) && (this.preY!= null))
+			return true;
+		else return false;
+	}
+
 	getPos() {
 		return {x:this.x, y:this.y};
 	}

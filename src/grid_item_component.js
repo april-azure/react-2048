@@ -21,51 +21,45 @@ class GridItemComponent extends Component {
 	componentDidUpdate() {
 		// play the position transition
 		let item = this.props.item;
-		let preClassName = item.preX && item.preY ? style[`grid_item_${item.preX}_${item.preY}`] : "";
+		let preClassName = item.hasPrePos() ? style[`grid_item_${item.preX}_${item.preY}`] : "";
 		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";		
 		if(this.$div.current.classList.contains(preClassName)){
 			setTimeout(() => {
 				this.$div.current.classList.remove(preClassName);			
 				this.$div.current.classList.add(posClassName);
-			}, 0)
-
-			
+			}, 0);
 		}
 	}
 
 	render() {
+		let className = []; 
 		let item = this.props.item;
 		let preClassName = typeof item.preX == "number" && typeof item.preY == "number" ? style[`grid_item_${item.preX}_${item.preY}`] : "";
 		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";
-		let valClassName = item.val > 0 ? style[`grid_${item.val}`] : "";
+		let valClassName = 0;
+		if(item.val >= 2048) 
+			valClassName = style.grid_item_super;
+		else if(item.val > 0) 
+			valClassName = style[`grid_${item.val}`];
 		let newClassName = item.new ? style.appear : "";
 		let mergedClassName = item.merged? style.merged : "";
+		let animationClass = style.animation;
+		let gridClassName = style.grid_item;
+		// class for moving grid item 
+		if(item.hasPrePos())
+			className = [gridClassName ,preClassName, valClassName, animationClass].join(" ");
+		else if(item.merged)
+			className = [gridClassName, mergedClassName, posClassName, valClassName].join(" ");
+		else // for new items
+			className = [gridClassName, newClassName, posClassName, valClassName].join(" ");
 
-		if(!item.preX || !item.preY) {
-			return (
-				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = {newClassName + " " +style.grid_item +" " + posClassName + " " + valClassName }>
-					<div>
-						{item.val && item.val > 0? item.val: "" }
-					</div>
+		return (
+			<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = {className}>
+				<div>
+					{item.val && item.val > 0? item.val: "" }
 				</div>
-			)			
-		}else if(item.merged) {
-			return (
-				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = {mergedClassName + " "+ style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
-					<div>
-						{item.val && item.val > 0? item.val: "" }
-					</div>
-				</div>				
-			)
-		}else {
-			return (
-				<div ref={this.$div} onAnimationEnd = {this.handleAnimationend} className = { style.animation + " " + style.grid_item +" " + preClassName + " " + valClassName }>
-					<div>
-						{item.val && item.val > 0? item.val: "" }
-					</div>
-				</div>
-			)					
-		}
+			</div>
+		)
 
 	}
 }

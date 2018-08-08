@@ -98,8 +98,8 @@ body{
 }
 
 .appear {
-	animation-duration: 2s;
-	animation-delay: 100ms;
+	animation-duration: 200ms;
+	animation-delay: 0;
 	animation-name: appear;
 	animation-timing-function: ease;
 }
@@ -112,6 +112,27 @@ body{
 	
 	100% {
 		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.merged {
+	animation-duration: 200ms;
+	animation-delay: 100ms;
+	animation-name: pop;
+	animation-timing-function: ease;
+}
+
+@keyframes pop {
+	0% {
+		transform: scale(1);
+	}
+
+	70% {
+		transform: scale(1.2);
+	}
+
+	100% {
 		transform: scale(1);
 	}
 }
@@ -139,13 +160,12 @@ body{
 }
 
 .grid_item.animation {
-	transition-duration: 2s;
+	transition-duration: 100ms;
 	transition-timing-function: ease-out;
 	transition-property: top left;	
 }
 
 .grid_item > div {
-
 	display: table-cell;
 	vertical-align: middle;
 }
@@ -154,6 +174,7 @@ body{
 	/*if not set, the appear item will appear first, then play the animation.*/
 	opacity: 0;
 }
+
 
 /*css the position of the items */
 .grid_item.grid_item_0_0 {
@@ -240,7 +261,7 @@ body{
 
 /*stlyes for different font-variant-ligatures: */
 .grid_2 {
-	background-color: #dccab6;
+	background-color: #eee4da;
 }
 
 .grid, .grid_2, .grid_4 {
@@ -248,21 +269,41 @@ body{
 }
 
 .grid_4 {
-	background-color: #ddc9a5;
+	background-color: #ede0c8;
 }
 
 .grid_8 {
-	background-color: #e4a062;
+	background-color: #f2b179;
 }
 
 .grid_16 {
-	background-color: #e58450;
+	background-color: #f59563;
 }
 
 .grid_32 {
-	background-color: #e36b4b;
+	background-color: #f67c5f;
 }
 
-.grid_8, .grid_16, .grid_32, .grid_64, .grid_128 {
+.grid_64 {
+	background-color: #f65e3b;
+}
+.grid_128 {
+	background-color: #edcf72;
+}
+.grid_256 {
+	background-color: #edcc61;
+}
+.grid_512 {
+	background-color: #edc850;
+}
+.grid_1024 {
+	background-color: #edc53f;
+}
+
+.grid_8, .grid_16, .grid_32, .grid_64, .grid_128, .grid_super {
 	color: white;
+}
+
+.grid_super {
+	background-color: black;
 }
