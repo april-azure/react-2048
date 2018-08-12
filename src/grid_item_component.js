@@ -20,14 +20,16 @@ class GridItemComponent extends Component {
 
 	componentDidUpdate() {
 		// play the position transition
-		let item = this.props.item;
-		let preClassName = item.hasPrePos() ? style[`grid_item_${item.preX}_${item.preY}`] : "";
-		let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";		
-		if(this.$div.current.classList.contains(preClassName)){
-			setTimeout(() => {
-				this.$div.current.classList.remove(preClassName);			
-				this.$div.current.classList.add(posClassName);
-			}, 0);
+		if(this.$div && this.$div.current) {
+			let item = this.props.item;
+			let preClassName = item.hasPrePos() ? style[`grid_item_${item.preX}_${item.preY}`] : "";
+			let posClassName = item.val > 0 ? style[`grid_item_${item.x}_${item.y}`] : "";		
+			if(this.$div.current.classList.contains(preClassName)){
+				setTimeout(() => {
+					this.$div.current.classList.remove(preClassName);			
+					this.$div.current.classList.add(posClassName);
+				}, 0);
+			}		
 		}
 	}
 

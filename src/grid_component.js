@@ -1,7 +1,8 @@
 import style from "./main.css"
 import React, {Component} from "react";
 import ReactDOM from "react-dom";
-import GridItemComponent from "./grid_item_component"
+import GridItemComponent from "./grid_item_component";
+import GameSummaryComponent from "./gameSummaryComponent";
 import Utils from "./Utils"
 
 class GridComponent extends Component {
@@ -30,16 +31,9 @@ class GridComponent extends Component {
 		})
 
 	    return (
-			<div className={style.container}>
-				<div className={style.title}>
-					<h1>2048</h1>
-					<p>React</p>
-				</div>
-				<div className={style.grid_2048} id='grid-box'>
-					{ gridContainers }
-					{ gridItems}
-				</div>
-
+			<div className={style.grid_2048} id='grid-box'>
+				{ gridContainers }
+				{ gridItems}
 			</div>
   		)		
 	}

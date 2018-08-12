@@ -73,16 +73,12 @@ class GridModel {
 		while(this._isWithinGrid(pos.row, pos.col)) {
 			cell = this.grid.getCellValue(pos.row, pos.col);
 			if(cell !== 0) {
-				console.log("The next cell is");
-				console.log(cell);
 
 				return {val: cell.val, row: pos.row, col: pos.col, preX: pre.row, preY: pre.col};
 			}
 			pre = {row: pos.row, col: pos.col}
 			pos = this._incrementByDirection(pos.row, pos.col, direction);
 		}
-		console.log("The next cell is");
-		console.log("row col " + pre.row + " " + pre.col);
 		return {row: pre.row, col: pre.col, val: 0, preX: null, preY: null};
 	}
 
@@ -148,7 +144,6 @@ class GridModel {
 			if(!this.grid.isFull()){
 				let pos = this.randomIni();
 				this._inform();
-				console.log('the returned ini pos ' + pos.x + " " + pos.y );
 				return pos;
 			}else {
 				console.log('the game should be ended')
@@ -187,7 +182,6 @@ class GridModel {
 
 	// merge the item from {x1,y1} to {x2, y2}
 	merge(x1, y1, x2, y2) {
-		console.log('try to merge ' + x1 + ' ' + y1 + ' ' + x2 + ' ' + y2);
 		// remove the cell from the grids
 		let merge1 = this.grid.getCellValue(x1, y1);
 		let merge2 = this.grid.getCellValue(x2, y2);

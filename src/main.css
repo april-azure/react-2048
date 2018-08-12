@@ -3,8 +3,12 @@
 	font-family: "arial", sans-serif;
 }
 
+h1, p {
+	margin:0;
+}
+
 :root{
-	--container-width: 50%;
+	--container-width: 70%;
 	--grid-gap: 12px;
 }
 
@@ -22,20 +26,61 @@ body{
 }
 
 .container{
-	width: var(--container-width);
 	margin: auto;
 	padding-top: 60px;
 }
 
-.container .title, .grid_2048 {
-	min-width: 400px;
-	max-width: 500px;
-}
-
-.container .title {
+.container .summary {
+	width: 500px;
 	display: block;
 	margin: auto;
 	margin-bottom: 16px;
+	position: relative;
+}
+
+.summary .title, .summary .scores, .scores .score {
+	display: block;
+}
+
+.summary .title {
+	width: 200px;
+}
+
+.summary .scores {
+	width: 300px;
+	top: 0;
+}
+
+.scores .score {
+	padding: 4px;
+	width: 100px;
+	height: 50px;
+
+	border-radius: 8px;
+	background-color: rgb(187, 173, 160);
+	text-align: center;
+	color: white;
+
+	position: absolute;
+	top: 10px;
+}
+
+.score.best{
+	left: 400px;
+}
+
+.score.current {
+	left: 292px;
+}
+
+.score p:first-child {
+
+}
+.score p:nth-child(2) {
+	font-size: 1.5rem;
+	font-weight: bold;
+	line-height: 28px;
+	vertical-align: middle;
 }
 
 .container .title h1{
@@ -155,8 +200,6 @@ body{
 
 	/*stle*/
 	border-radius: 8px;
-
-
 }
 
 .grid_item.animation {

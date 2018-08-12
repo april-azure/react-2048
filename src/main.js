@@ -4,16 +4,25 @@ import GridComponent from "./grid_component";
 import GridModel, {DIRECTIONS} from "./grid_model";
 import Utils from "./Utils";
 import style from "./main.css";
+import GameSummaryComponent from "./GameSummaryComponent"
 
 var main = (function(){
 	var gridModel = new GridModel(4);
 	var gameEnd = false; 
-	
-	(function ini() {
+	var bestScore = 0;
+	var currentScore = 0;
+	var KEYS = {
+		best: "best", 
+		preState: null
+	};
+
+	function ini() {
 		gridModel.subscribe(render);
 		render();
 		gridModel.randomIni();
 		gridModel.randomIni();
+		gameEnd = false;
+		bestScore = getBestScore();
 		window.onkeydown = function(event) {
 			let key = event.key; 
 			let iniCells;
@@ -36,35 +45,41 @@ var main = (function(){
 				case ("ArrowRight"): 
 					console.log('right');
 					iniCells = gridModel.move(DIRECTIONS.RIGHT);							
-					break;
-
-				
+					break;		
 			}
 		};		
-	})();
+	}
 
-	function cellAppear(pos) {
-		if(pos){
-			console.log("cell appear " + pos.x + " " + pos.y)
-			let className = style[`grid_item_${pos.x}_${pos.y}`];
-			let $element = document.getElementsByClassName(className)[0];
-			if($element.classList.contains(style.appear))	
-				$element.classList.remove(style.appear);
-			setTimeout(() => $element.classList.add(style.appear), 0);		
-		}
+	function getBestScore() {
+		bestScore = localStorage.getItem(KEYS.best);
+	}
+
+	function setBestScore(score) {
+		localStorage.setItem(KEYS.best, score);
+	}
+
+	var Main = () => {
+		return (
+			<div className={style.container}>
+				<GameSummaryComponent main = {main}/>
+				<GridComponent model = {gridModel}/>
+			</div>
+		)
 	}
 
 	function render() {
-		ReactDOM.render(<GridComponent model = {gridModel}/>, document.getElementById("root"));	
+		ReactDOM.render(<Main/>, document.getElementById("root"));	
 	}
 
 	return {
-		gridModel : gridModel,
-		gameEnd : gameEnd
+		gridModel,
+		gameEnd,
+		ini,
+		setBestScore
 	}
 
 })();
 
-
+main.ini();
 
 
